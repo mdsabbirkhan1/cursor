@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tool Information Generator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            color: white;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin: 20px 0;
+        }
+        
+        .form-container {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(255, 255, 255, 0.92);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .preview-container {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(255, 255, 255, 0.92);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .features-hint {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        
+        .btn-container {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .generate-btn {
+            background: linear-gradient(to right, #3498db, #2c3e50);
+            color: white;
+        }
+        
+        .generate-btn:hover {
+            background: linear-gradient(to right, #2980b9, #1a252f);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .reset-btn {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .reset-btn:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .preview-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+        }
+        
+        .copy-btn {
+            background: #27ae60;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .copy-btn:hover {
+            background: #219653;
+        }
+        
+        .code-container {
+            background: #2c3e50;
+            color: #ecf0f1;
+            border-radius: 8px;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            min-height: 400px;
+            line-height: 1.5;
+        }
+        
+        .property {
+            color: #3498db;
+        }
+        
+        .string {
+            color: #2ecc71;
+        }
+        
+        .number {
+            color: #e74c3c;
+        }
+        
+        .array {
+            color: #f39c12;
+        }
+        
+        .badge-example {
+            display: inline-block;
+            margin-left: 10px;
+            font-size: 0.9rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: #e67e22;
+            color: white;
+        }
+        
+        footer {
+            text-align: center;
+            color: white;
+            padding: 30px 0;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+            
+            .btn-container {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-code"></i> Tool Information Generator</h1>
+            <p class="subtitle">Create JavaScript objects for your development tools with this easy-to-use generator</p>
+        </header>
+        
+        <div class="content">
+            <div class="form-container">
+                <h2>Tool Details</h2>
+                <form id="toolForm">
+                    <div class="form-group">
+                        <label for="id">ID:</label>
+                        <input type="text" id="id" placeholder="Enter unique identifier (e.g., 'vercel')" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="name">Name:</label>
+                        <input type="text" id="name" placeholder="Enter tool name (e.g., 'Vercel')" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="category">Category:</label>
+                        <select id="category" required>
+                            <option value="">Select a category</option>
+                            <option value="development">Development</option>
+                            <option value="Finance Tools">Finance Tools</option>
+<option value="Health Tools">Health Tools</option>
+<option value="Date & Time Tools">Date & Time Tools</option>
+<option value="Conversion Tools">Conversion Tools</option>
+<option value="Text Tools">Text Tools</option>
+<option value="Security Tools">Security Tools</option>
+<option value="Image tools">Image Tools</option>
+<option value="Math Tools">Math Tools</option>
+<option value="Utility Tools">Utility Tools</option>
+<option value="SEO tool">SEO tool</option>
+<option value="Network Tools">Network Tools</option>
+<option value="Legal Tools">Legal Tools</option>
+<option value="Scanning Tools">Scanning Tools</option>
+<option value="Design Tools">Design Tools</option>
+<option value="Time Tools">Time Tools</option>
+<option value="Text Formatting Tools">Text Formatting Tools</option>
+<option value="Writing Tools">Writing Tools</option>
+<option value="Audio Tools">Audio Tools</option>
+                            
+                            <option value="design">Design</option>
+                            <option value="productivity">Productivity</option>
+                            <option value="marketing">Marketing</option>
+                            <option value="analytics">Analytics</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="description">Description:</label>
+                        <textarea id="description" placeholder="Enter tool description" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="icon">Icon Class:</label>
+                        <input type="text" id="icon" placeholder="Enter Font Awesome classes (e.g., 'fas fa-cloud')" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="link">Website Link:</label>
+                        <input type="url" id="link" placeholder="Enter full URL (e.g., 'https://vercel.com')" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="rating">Rating (0-5):</label>
+                        <input type="number" id="rating" min="0" max="5" step="0.1" placeholder="Enter rating (e.g., 4.8)" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="badge">Badge (optional):</label>
+                        <input type="text" id="badge" placeholder="e.g., 'new', 'popular', 'staff pick'">
+                        <span class="badge-example">Example: new</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="features">Features:</label>
+                        <textarea id="features" placeholder="Enter features separated by commas" required></textarea>
+                        <p class="features-hint">Separate features with commas (e.g., Serverless deployment, Edge functions, Analytics)</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="pricing">Pricing:</label>
+                        <input type="text" id="pricing" placeholder="e.g., Freemium, Free, Paid, Subscription" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="dateAdded">Date Added:</label>
+                        <input type="date" id="dateAdded" required>
+                    </div>
+                    
+                    <div class="btn-container">
+                        <button type="button" class="generate-btn" id="generateBtn">
+                            <i class="fas fa-cogs"></i> Generate Code
+                        </button>
+                        <button type="reset" class="reset-btn">
+                            <i class="fas fa-redo"></i> Reset Form
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="preview-container">
+                <div class="preview-header">
+                    <h3 class="preview-title">Generated JavaScript Code</h3>
+                    <button class="copy-btn" id="copyBtn">
+                        <i class="fas fa-copy"></i> Copy to Clipboard
+                    </button>
+                </div>
+                <div class="code-container" id="codeOutput">
+                    <pre>// Your generated code will appear here
+// Fill out the form and click "Generate Code"</pre>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Created with ❤️ | Tool Information Generator | All data remains in your browser</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set today's date as default
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('dateAdded').value = today;
+            
+            // Form elements
+            const form = document.getElementById('toolForm');
+            const generateBtn = document.getElementById('generateBtn');
+            const resetBtn = form.querySelector('button[type="reset"]');
+            const copyBtn = document.getElementById('copyBtn');
+            const codeOutput = document.getElementById('codeOutput');
+            
+            // Generate code when button is clicked
+            generateBtn.addEventListener('click', generateCode);
+            
+            // Copy to clipboard
+            copyBtn.addEventListener('click', copyToClipboard);
+            
+            // Reset form
+            resetBtn.addEventListener('click', function() {
+                document.getElementById('dateAdded').value = today;
+                codeOutput.innerHTML = '<pre>// Your generated code will appear here\n// Fill out the form and click "Generate Code"</pre>';
+            });
+            
+            function generateCode() {
+                // Get all form values
+                const id = document.getElementById('id').value.trim();
+                const name = document.getElementById('name').value.trim();
+                const category = document.getElementById('category').value;
+                const description = document.getElementById('description').value.trim();
+                const icon = document.getElementById('icon').value.trim();
+                const link = document.getElementById('link').value.trim();
+                const rating = document.getElementById('rating').value;
+                const badge = document.getElementById('badge').value.trim();
+                const features = document.getElementById('features').value
+                    .split(',')
+                    .map(feature => feature.trim())
+                    .filter(feature => feature);
+                const pricing = document.getElementById('pricing').value.trim();
+                const dateAdded = document.getElementById('dateAdded').value;
+                
+                // Validate required fields
+                if (!id || !name || !category || !description || !icon || !link || !rating || !features.length || !pricing || !dateAdded) {
+                    alert('Please fill in all required fields');
+                    return;
+                }
+                
+                // Format features array
+                const formattedFeatures = features.map(feature => `        '${feature}'`).join(',\n');
+                
+                // Create the JavaScript object
+                const jsObject = `{
+    id: '${id}',
+    name: '${name}',
+    category: '${category}',
+    description: '${description}',
+    icon: '${icon}',
+    link: '${link}',
+    rating: ${rating},
+    ${badge ? `badge: '${badge}',` : ''}
+    features: [
+${formattedFeatures}
+    ],
+    pricing: '${pricing}',
+    dateAdded: '${dateAdded}'
+}`;
+                
+                // Format with syntax highlighting
+                const formattedOutput = jsObject
+                    .replace(/(id|name|category|description|icon|link|rating|badge|features|pricing|dateAdded):/g, '<span class="property">$1</span>:')
+                    .replace(/'([^']*)'/g, '<span class="string">\'$1\'</span>')
+                    .replace(/(\d+\.?\d*)/g, '<span class="number">$1</span>')
+                    .replace(/\[([^\]]*)\]/g, '<span class="array">[$1]</span>');
+                
+                // Display the generated code
+                codeOutput.innerHTML = `<pre>${formattedOutput}</pre>`;
+            }
+            
+            function copyToClipboard() {
+                const pre = codeOutput.querySelector('pre');
+                if (!pre || pre.textContent.includes('will appear here')) {
+                    alert('Nothing to copy!');
+                    return;
+                }
+                
+                // Create a textarea to hold the text
+                const textarea = document.createElement('textarea');
+                textarea.value = pre.textContent;
+                document.body.appendChild(textarea);
+                textarea.select();
+                
+                // Copy the text
+                try {
+                    document.execCommand('copy');
+                    alert('Code copied to clipboard!');
+                } catch (err) {
+                    alert('Failed to copy code');
+                } finally {
+                    document.body.removeChild(textarea);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
